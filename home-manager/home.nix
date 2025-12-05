@@ -1,17 +1,32 @@
 { inputs, config, pkgs, ... }:
 {
-  # Home Manager needs a bit of information about you and the paths it should
+
+  imports = [ inputs.nixvim.homeModules.nixvim ];
+
+# Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "leigh";
   home.homeDirectory = "/home/leigh";
 
-  programs.nixvim.enable = true;
+  programs.nixvim = { 
+    enable = true;
+    imports = [ ];
+  };
 
-  programs.nixvim.imports = [
-    ./lsp.nix
-    ./completions.nix
-    ./options.nix
-  ];
+  programs.vscode = {
+  enable = true;
+  extensions = with pkgs.vscode-extensions; [
+    dracula-theme.theme-dracula
+    vscodevim.vim
+    yzhang.markdown-all-in-one
+    rust-lang.rust-analyzer
+    vscjava.vscode-maven
+    ms-python.flake8
+    ms-python.black-formatter
+    pylyzer.pylyzer
+    llvm-vs-code-extensions.vscode-clangd
+    ];
+  };
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
@@ -27,6 +42,7 @@
   home.packages = with pkgs; [
     nix-direnv
     fastfetch
+    freecad
     dmidecode
     eza
     ripgrep
@@ -70,7 +86,7 @@
       user.name = "Leigh Gable";
       user.email = "leighgable@gmail.com";
     };
-    signing.key = ""; 
+    signing.key = "E0D973FDC7E09875"; 
   };
   programs.gh = {
     enable = true;
