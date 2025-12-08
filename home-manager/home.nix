@@ -1,7 +1,11 @@
 { inputs, config, pkgs, ... }:
 {
 
-  imports = [ inputs.nixvim.homeModules.nixvim ];
+  imports = [ 
+    inputs.nixvim.homeModules.nixvim 
+    inputs.homeManagerModules
+#    inputs.antigravity-nix.packages.x86_64-linux.default
+    ];
 
 # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -18,6 +22,7 @@
   extensions = with pkgs.vscode-extensions; [
     dracula-theme.theme-dracula
     vscodevim.vim
+    kamadorueda.alejandra
     yzhang.markdown-all-in-one
     rust-lang.rust-analyzer
     vscjava.vscode-maven
@@ -55,6 +60,8 @@
     bottom
     wl-clipboard
     glow
+    zellij
+ #   antigravity-nix
 
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
