@@ -6,4 +6,5 @@
   keymappings = import ./nixvim/keymappings.nix;
   autocommands = import ./nixvim/autocommands.nix;
   todo = import ./nixvim/todo.nix;
+  plugins = import ./plugins;
 }

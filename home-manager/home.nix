@@ -1,9 +1,16 @@
-{ inputs, config, pkgs, ... }:
+{ inputs, outputs, config, pkgs, ... }:
 {
 
   imports = [ 
-    inputs.nixvim.homeModules.nixvim 
-    inputs.homeManagerModules
+    inputs.nixvim.homeModules.nixvim
+    ./autocommands.nix
+    ./completions.nix
+    ./keymappings.nix
+    ./options.nix
+    ./plugins
+    ./todo.nix
+    # outputs.homeManagerModules.default
+    
 #    inputs.antigravity-nix.packages.x86_64-linux.default
     ];
 
@@ -14,7 +21,7 @@
 
   programs.nixvim = { 
     enable = true;
-    imports = [ ];
+   # imports = [ completions todo autocommands options keymappings ];
   };
 
   programs.vscode = {
