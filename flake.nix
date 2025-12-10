@@ -23,13 +23,13 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... } @inputs: {
+  outputs = {self, nixpkgs, home-manager, ... }: {
 
-    nixosModules = import ./modules/nixos;
-    homeManagerModules = import ./modules/home-manager;
+    nixosModules = ./modules/nixos;
+    homeManagerModules = ./modules/home-manager;
 
     nixosConfigurations.ooo = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs; };
+      specialArgs = { inherit (self) inputs; };
       modules = [ 
         ./nixos/configuration.nix
       ];

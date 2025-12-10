@@ -2,21 +2,21 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ inputs, outputs, config, pkgs, ... }:
+{ inputs, config, pkgs, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       inputs.home-manager.nixosModules.home-manager
-      # inputs.nixvim.homeModules.nixvim
     ];
 
     home-manager = {
       useGlobalPkgs = true;
       useUserPackages = true;
-      extraSpecialArgs = { inherit inputs outputs; };
-      users.leigh = import ../home-manager/home.nix;
+      sharedModules = [ ../modules/home-manager ];
+      extraSpecialArgs = { inherit inputs; };
+      users.leigh = ../home-manager/home.nix;
     };
 
   # Bootloader.

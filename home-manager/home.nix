@@ -1,17 +1,17 @@
-{ inputs, outputs, config, pkgs, ... }:
-{
+{ inputs, config, pkgs, ... }:
 
+# let 
+#    antigravity = builtins.getFlake "github:jacopone/antigravity-nix";
+#  in
+  {
   imports = [ 
     inputs.nixvim.homeModules.nixvim
-    ./autocommands.nix
-    ./completions.nix
-    ./keymappings.nix
-    ./options.nix
-    ./plugins
-    ./todo.nix
-    # outputs.homeManagerModules.default
-    
-#    inputs.antigravity-nix.packages.x86_64-linux.default
+    ./nixvim/options.nix
+    ./nixvim/keymappings.nix
+    ./nixvim/completions.nix
+    ./nixvim/todo.nix
+    ./nixvim/autocommands.nix
+    ./nixvim/plugins
     ];
 
 # Home Manager needs a bit of information about you and the paths it should
@@ -53,6 +53,8 @@
   # environment.
   home.packages = with pkgs; [
     nix-direnv
+    screen
+    nix-direnv
     fastfetch
     freecad
     dmidecode
@@ -68,7 +70,7 @@
     wl-clipboard
     glow
     zellij
- #   antigravity-nix
+    inputs.antigravity-nix.packages.x86_64-linux.default
 
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
@@ -154,4 +156,5 @@
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+
 }
