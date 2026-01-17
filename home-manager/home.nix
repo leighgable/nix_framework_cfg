@@ -1,42 +1,78 @@
-{ inputs, config, pkgs, ... }:
+{
+  inputs,
+  config,
+  pkgs,
+  ...
+}:
 
-# let 
-#    antigravity = builtins.getFlake "github:jacopone/antigravity-nix";
-#  in
-  {
-  imports = [ 
+{
+  imports = [
     inputs.nixvim.homeModules.nixvim
-    ./nixvim/options.nix
-    ./nixvim/keymappings.nix
-    ./nixvim/completions.nix
-    ./nixvim/todo.nix
-    ./nixvim/autocommands.nix
-    ./nixvim/plugins
-    ];
+    # ./nixvim/options.nix
+    # ./nixvim/keymappings.nix
+    # ./nixvim/completions.nix
+    # ./nixvim/todo.nix
+    # ./nixvim/autocommands.nix
+    # ./nixvim/plugins
+  ];
 
-# Home Manager needs a bit of information about you and the paths it should
+  # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "leigh";
   home.homeDirectory = "/home/leigh";
 
-  programs.nixvim = { 
+  home.shell.enableBashIntegration = true;
+
+  programs.bash = {
     enable = true;
-   # imports = [ completions todo autocommands options keymappings ];
+    enableCompletion = true;
+    historyControl = [ "ignoreboth" ];
+    historyIgnore = [
+      "ls"
+      "cd"
+    ];
+    shellAliases = {
+      ls = "eza";
+      ll = "eza -l";
+      la = "eza -la";
+      vi = "nvim";
+      vim = "nvim";
+      cat = "bat";
+    };
+  };
+
+  programs.nixvim = {
+    enable = true;
+    # imports = [ completions todo autocommands options keymappings ];
   };
 
   programs.vscode = {
-  enable = true;
-  extensions = with pkgs.vscode-extensions; [
-    dracula-theme.theme-dracula
-    vscodevim.vim
-    kamadorueda.alejandra
-    yzhang.markdown-all-in-one
-    rust-lang.rust-analyzer
-    vscjava.vscode-maven
-    ms-python.flake8
-    ms-python.black-formatter
-    pylyzer.pylyzer
-    llvm-vs-code-extensions.vscode-clangd
+    enable = true;
+    profiles.default.extensions = with pkgs.vscode-extensions; [
+      dracula-theme.theme-dracula
+      vscodevim.vim
+      kamadorueda.alejandra
+      yzhang.markdown-all-in-one
+      rust-lang.rust-analyzer
+      vscjava.vscode-maven
+      ms-python.flake8
+      ms-python.black-formatter
+      pylyzer.pylyzer
+      llvm-vs-code-extensions.vscode-clangd
+    ];
+  };
+
+  programs.obs-studio = {
+    enable = true;
+    package = pkgs.obs-studio;
+    plugins = with pkgs.obs-studio-plugins; [
+      wlrobs
+      obs-backgroundremoval
+      obs-pipewire-audio-capture
+      obs-vaapi
+      obs-gstreamer
+      obs-vkcapture
+      droidcam-obs
     ];
   };
 
@@ -52,13 +88,31 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
+    tree-sitter
+    fzf
+    python3Packages.pynvim
+    python3Packages.jupytext
+    python3Packages.jupyter-client
+    protolint
+    clang-tools
+    jetbrains-mono
+    ruff
+    pyright
+    hadolint
+    nurl
+    nixpkgs-fmt
+    nixpkgs-review
+    xclip
+    tflint
+    pylint
+    bat
+    black
     nix-direnv
     screen
-    nix-direnv
     fastfetch
-    freecad
     dmidecode
     eza
+    tmux
     ripgrep
     google-chrome
     tree
@@ -80,12 +134,12 @@
     # # overrides. You can do that directly here, just don't forget the
     # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
     # # fonts?
-    # # (pkgs.nerd-fonts.override { fonts = 
-    #  [ 
-    #    "fira-code" 
+    # # (pkgs.nerd-fonts.override { fonts =
+    #  [
+    #    "fira-code"
     #    "droid-sans-mono"
     #    "jetbrains-mono"
-    #  ]; 
+    #  ];
     # })
 
     # # You can also create simple shell scripts directly inside your
@@ -96,13 +150,28 @@
     # '')
   ];
 
+  programs.tmux = {
+
+    enable = true;
+    shell = "bash";
+
+  };
+
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+    enableBashIntegration = true;
+  };
+
+  programs.bat.enable = true;
+
   programs.git = {
     enable = true;
     settings = {
       user.name = "Leigh Gable";
       user.email = "leighgable@gmail.com";
     };
-    signing.key = "E0D973FDC7E09875"; 
+    signing.key = "E0D973FDC7E09875";
   };
   programs.gh = {
     enable = true;

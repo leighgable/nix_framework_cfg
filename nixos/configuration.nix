@@ -22,7 +22,7 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  
+
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   networking.hostName = "oOo"; # Define your hostname.
@@ -54,7 +54,7 @@
 
   nix = {
     settings = {
-      experimental-features = "nix-command flakes"; 
+      experimental-features = "nix-command flakes";
       auto-optimise-store = true;
     };
   };
@@ -116,7 +116,7 @@
     #media-session.enable = true;
   };
 
-  #services.udev.packages = [ 
+  #services.udev.packages = [
   #  pkgs.platformio-core
   #  pkgs.openocd
   #];
@@ -140,7 +140,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     wget
-    
+
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

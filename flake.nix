@@ -15,6 +15,14 @@
       url = "github:jacopone/antigravity-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    emacs-overlay = {
+      url = "github:nix-community/emacs-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    crane = {
+      url = "github:ipetkov/crane";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     treefmt-nix = {
       type = "github";
       owner = "numtide";
@@ -23,17 +31,24 @@
     };
   };
 
-  outputs = {self, nixpkgs, home-manager, ... }: {
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      ...
+    }:
+    {
 
-    nixosModules = ./modules/nixos;
-    homeManagerModules = ./modules/home-manager;
+      nixosModules = ./modules/nixos;
+      homeManagerModules = ./modules/home-manager;
 
-    nixosConfigurations.ooo = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit (self) inputs; };
-      modules = [ 
-        ./nixos/configuration.nix
-      ];
+      nixosConfigurations.ooo = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit (self) inputs; };
+        modules = [
+          ./nixos/configuration.nix
+        ];
+      };
+
     };
-
-  };
 }
