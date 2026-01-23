@@ -2,22 +2,30 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ inputs, config, pkgs, ... }:
+{
+  inputs,
+  config,
+  pkgs,
+  ...
+}:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      inputs.home-manager.nixosModules.home-manager
-    ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    inputs.home-manager.nixosModules.home-manager
+  ];
 
-    home-manager = {
-      useGlobalPkgs = true;
-      useUserPackages = true;
-      sharedModules = [ ../modules/home-manager ];
-      extraSpecialArgs = { inherit inputs; };
-      users.leigh = ../home-manager/home.nix;
-    };
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    sharedModules = [ 
+      ../modules/home-manager
+      inputs.nix-doom-emacs-unstraightened.homeModule
+    ];
+    extraSpecialArgs = { inherit inputs; };
+    users.leigh = ../home-manager/home.nix;
+  };
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -90,7 +98,7 @@
     gnome-contacts
     cheese
     gnome-tour
-   ];
+  ];
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -128,7 +136,10 @@
   users.users.leigh = {
     isNormalUser = true;
     description = "Leigh Gable";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     packages = with pkgs; [
     ];
   };
@@ -143,6 +154,40 @@
 
   ];
 
+  programs.nvf = {
+    enable = true;
+    settings = {
+      vim.theme.enable = true;
+      vim.theme.name = "gruvbox";
+      vim.theme.style = "dark";
+
+      vim.statusline.lualine.enable = true;
+      vim.telescope.enable = true;
+      vim.autocomplete.nvim-cmp.enable = true;
+      vim.languages = {
+        enableLSP = true;
+        enableTreesitter = true;
+
+        nix.enable = true;
+        rust.enable = true;
+        python = {
+          enable = true;
+          lsp = {
+            enable = true;
+            servers = [ "python-lsp-server" ];
+          };
+          format = { 
+            enable = true;
+            type = "ruff";
+          };
+        };
+        clang = {
+          lsp.enable = true;
+          lsp.servers = [ "clangd" ];
+        };
+      };
+    };
+  };
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;

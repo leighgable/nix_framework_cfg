@@ -7,13 +7,7 @@
 
 {
   imports = [
-    inputs.nixvim.homeModules.nixvim
-    # ./nixvim/options.nix
-    # ./nixvim/keymappings.nix
-    # ./nixvim/completions.nix
-    # ./nixvim/todo.nix
-    # ./nixvim/autocommands.nix
-    # ./nixvim/plugins
+#    inputs.nix-doom-emacs-unstraightened.homeModule
   ];
 
   # Home Manager needs a bit of information about you and the paths it should
@@ -41,26 +35,26 @@
     };
   };
 
-  programs.nixvim = {
+  programs.doom-emacs = {
     enable = true;
-    # imports = [ completions todo autocommands options keymappings ];
+    doomDir = ~/.doom/doom.d;
   };
 
-  programs.vscode = {
-    enable = true;
-    profiles.default.extensions = with pkgs.vscode-extensions; [
-      dracula-theme.theme-dracula
-      vscodevim.vim
-      kamadorueda.alejandra
-      yzhang.markdown-all-in-one
-      rust-lang.rust-analyzer
-      vscjava.vscode-maven
-      ms-python.flake8
-      ms-python.black-formatter
-      pylyzer.pylyzer
-      llvm-vs-code-extensions.vscode-clangd
-    ];
-  };
+  #  programs.vscode = {
+  #  enable = true;
+  #  profiles.default.extensions = with pkgs.vscode-extensions; [
+  #    dracula-theme.theme-dracula
+  #    vscodevim.vim
+  #    kamadorueda.alejandra
+  #    yzhang.markdown-all-in-one
+  #    rust-lang.rust-analyzer
+  #    vscjava.vscode-maven
+  #    ms-python.flake8
+  #    ms-python.black-formatter
+  #    pylyzer.pylyzer
+  #    llvm-vs-code-extensions.vscode-clangd
+  #  ];
+  #};
 
   programs.obs-studio = {
     enable = true;
