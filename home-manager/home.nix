@@ -37,7 +37,7 @@
 
   programs.doom-emacs = {
     enable = true;
-    doomDir = ~/.doom/doom.d;
+    doomDir = ./doom;
   };
 
   #  programs.vscode = {
