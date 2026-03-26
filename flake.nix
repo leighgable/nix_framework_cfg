@@ -12,10 +12,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nix-doom-emacs-unstraightened = {
-      url = "github:marienz/nix-doom-emacs-unstraightened";
-    };
-
     antigravity-nix = {
       url = "github:jacopone/antigravity-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -42,7 +38,7 @@
       nixpkgs,
       home-manager,
       nvf,
-      nix-doom-emacs-unstraightened,
+      emacs-overlay,
       ...
     }:
     {
@@ -53,6 +49,9 @@
       nixosConfigurations.ooo = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit (self) inputs; };
         modules = [
+          ({config, pkgs, ...}: {
+            nixpkgs.overlays = [
+              emacs-overlay.overlay ];})
           ./nixos/configuration.nix
           nvf.nixosModules.default
         ];

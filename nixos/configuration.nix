@@ -21,7 +21,6 @@
     useUserPackages = true;
     sharedModules = [ 
       ../modules/home-manager
-      inputs.nix-doom-emacs-unstraightened.homeModule
     ];
     extraSpecialArgs = { inherit inputs; };
     users.leigh = ../home-manager/home.nix;
@@ -151,12 +150,19 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     wget
-
   ];
 
   programs.nvf = {
     enable = true;
     settings = {
+      vim.options = {
+        tabstop = 2;
+        shiftwidth = 0;
+      };
+      vim.utility = {
+        multicursors.enable = true;
+        diffview-nvim.enable = true;
+      };
       vim.theme.enable = true;
       vim.theme.name = "gruvbox";
       vim.theme.style = "dark";
@@ -164,8 +170,8 @@
       vim.statusline.lualine.enable = true;
       vim.telescope.enable = true;
       vim.autocomplete.nvim-cmp.enable = true;
+      vim.lsp.enable = true;
       vim.languages = {
-        enableLSP = true;
         enableTreesitter = true;
 
         nix.enable = true;
@@ -178,14 +184,28 @@
           };
           format = { 
             enable = true;
-            type = "ruff";
+            type = [ "ruff" ];
           };
         };
         clang = {
+          enable = true;
           lsp.enable = true;
           lsp.servers = [ "clangd" ];
         };
       };
+      vim.extraPlugins = {
+        parinfer = {
+          package = pkgs.vimPlugins.parinfer-rust;
+        };
+        ts-rainbow = {
+          package = pkgs.vimPlugins.rainbow-delimiters-nvim;
+          setup = "require('rainbow-delimiters.setup').setup()";
+        };
+        futhark = {
+          package = pkgs.vimPlugins.futhark-vim;
+        };
+      };
+
     };
   };
   # Some programs need SUID wrappers, can be configured further or are

@@ -41,8 +41,14 @@
        (tty +osc)
 
        :lang
+       cc
        emacs-lisp
+       markdown
+       rust
+       lua
+       latex
        (nix +lsp)
+       (scheme +guile)
 
        :tools
        (lsp +eglot)
