@@ -13,13 +13,14 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ./amd-optimization.nix
     inputs.home-manager.nixosModules.home-manager
   ];
 
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    sharedModules = [ 
+    sharedModules = [
       ../modules/home-manager
     ];
     extraSpecialArgs = { inherit inputs; };
@@ -27,10 +28,26 @@
   };
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot = {
+    kernelParams = [
+      "mem_sleep_default=s2idle"
+      "btusb.enable_autosuspend=n"
+    ];
+    loader = {
+      systemd-boot = {
+        enable = true;
+        configurationLimit = 10;
+      };
+      efi.canTouchEfiVariables = true;
+    };
+    kernelPackages = pkgs.linuxPackages_latest;
+  };
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  hardware.amd-npu = {
+    enable = true;
+    enableNPU = true;
+    lemonade.user = "leigh";
+  };
 
   networking.hostName = "oOo"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -61,7 +78,10 @@
 
   nix = {
     settings = {
-      experimental-features = "nix-command flakes";
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       auto-optimise-store = true;
     };
   };
@@ -78,7 +98,6 @@
     gedit
     gnome-software
     gnome-music
-    gnome-photos
     simple-scan
     totem
     epiphany
@@ -102,6 +121,20 @@
   services.xserver.xkb = {
     layout = "us";
     variant = "";
+  };
+
+  environment.etc."libinput/local-overrides.quirks".text = pkgs.lib.mkForce ''
+    [Framework Touchpad Palm Pressure Override]
+    MatchName=*Touchpad*
+    MatchVendor=0x093A
+    # Drop the pressure threshold required to flag a touch as a "palm" (ignoring it)
+    AttrPalmPressureThreshold=100
+    AttrPalmSizeThreshold=10
+  '';
+
+  environment.shellAliases = {
+    ll = "ls -l";
+    la = "ls -la";
   };
 
   # Enable CUPS to print documents.
@@ -138,8 +171,11 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "video"
+      "render"
     ];
     packages = with pkgs; [
+      pciutils
     ];
   };
 
@@ -150,64 +186,15 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     wget
+    (writeShellScriptBin "mdtree" ''
+      # Use explicit paths or ensure 'tree' and 'sed' are in PATH
+      tree=$(${pkgs.tree}/bin/tree -tf --noreport -I '*~' --charset ascii "$1" |
+             ${pkgs.gnused}/bin/sed -e 's/| \+/  /g' -e 's/[|`]-\+/ */g' -e 's:\(* \)\(\(.*/\)\([^/]\+\)\):\1[\4](\2):g')
+
+      printf "#-----\n\n\''${tree}\n"
+    '')
   ];
 
-  programs.nvf = {
-    enable = true;
-    settings = {
-      vim.options = {
-        tabstop = 2;
-        shiftwidth = 0;
-      };
-      vim.utility = {
-        multicursors.enable = true;
-        diffview-nvim.enable = true;
-      };
-      vim.theme.enable = true;
-      vim.theme.name = "gruvbox";
-      vim.theme.style = "dark";
-
-      vim.statusline.lualine.enable = true;
-      vim.telescope.enable = true;
-      vim.autocomplete.nvim-cmp.enable = true;
-      vim.lsp.enable = true;
-      vim.languages = {
-        enableTreesitter = true;
-
-        nix.enable = true;
-        rust.enable = true;
-        python = {
-          enable = true;
-          lsp = {
-            enable = true;
-            servers = [ "python-lsp-server" ];
-          };
-          format = { 
-            enable = true;
-            type = [ "ruff" ];
-          };
-        };
-        clang = {
-          enable = true;
-          lsp.enable = true;
-          lsp.servers = [ "clangd" ];
-        };
-      };
-      vim.extraPlugins = {
-        parinfer = {
-          package = pkgs.vimPlugins.parinfer-rust;
-        };
-        ts-rainbow = {
-          package = pkgs.vimPlugins.rainbow-delimiters-nvim;
-          setup = "require('rainbow-delimiters.setup').setup()";
-        };
-        futhark = {
-          package = pkgs.vimPlugins.futhark-vim;
-        };
-      };
-
-    };
-  };
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;

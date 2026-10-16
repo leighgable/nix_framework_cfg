@@ -7,38 +7,26 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nvf = {
-      url = "github:notashelf/nvf";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    antigravity-nix = {
-      url = "github:jacopone/antigravity-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     emacs-overlay = {
       url = "github:nix-community/emacs-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-#   crane = {
-#      url = "github:ipetkov/crane";
-#      inputs.nixpkgs.follows = "nixpkgs";
-#    };
     treefmt-nix = {
       type = "github";
       owner = "numtide";
       repo = "treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-amd-ai.url = "github:noamsto/nix-amd-ai";
   };
 
   outputs =
     {
       self,
       nixpkgs,
-      home-manager,
-      nvf,
+      # home-manager,
       emacs-overlay,
+      nix-amd-ai,
       ...
     }:
     {
@@ -49,11 +37,16 @@
       nixosConfigurations.ooo = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit (self) inputs; };
         modules = [
-          ({config, pkgs, ...}: {
-            nixpkgs.overlays = [
-              emacs-overlay.overlay ];})
+          (
+            { config, pkgs, ... }:
+            {
+              nixpkgs.overlays = [
+                emacs-overlay.overlay
+              ];
+            }
+          )
+          nix-amd-ai.nixosModules.default
           ./nixos/configuration.nix
-          nvf.nixosModules.default
         ];
       };
 
