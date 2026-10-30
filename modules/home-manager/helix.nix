@@ -119,7 +119,7 @@
         {
           name = "scheme";
           auto-format = true;
-          formatter-command = lib.getExe pkgs.schemat;
+          formatter.command = lib.getExe pkgs.schemat;
         }
         {
           name = "futhark";

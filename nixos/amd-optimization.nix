@@ -2,20 +2,20 @@
 
 {
   boot.kernelParams = [
-    # --- CPU & System ---
-    "amd_pstate=active" # AMD P-State driver for optimal power scheduling
-    "iommu=pt" # IOMMU passthrough for low-latency hardware mapping
+    # # --- CPU & System ---
+    # "amd_pstate=active" # AMD P-State driver for optimal power scheduling
+    # "iommu=pt" # IOMMU passthrough for low-latency hardware mapping
 
-    # --- GPU: Aggressive Workarounds for Strix Point (gfx1150) ---
-    "amdgpu.dcdebugmask=0x10" # Fixes potential terminal rendering lags & flickering
-    "amdgpu.runpm=0" # Disables aggressive runtime power management to prevent deep-state drops
-    "amdgpu.mes=0" # CRITICAL: Disables Micro Engine Scheduler to block ML ring-buffer timeout hangs
-    "amdgpu.gpu_recovery=1" # Enables automated recovery loops if the driver stalls during a batch
-    "amdgpu.lockup_timeout=10000" # Generous 10-second timeout allocation for heavy token execution
-    "amdgpu.noretry=0"
+    # # --- GPU: Aggressive Workarounds for Strix Point (gfx1150) ---
+    # "amdgpu.dcdebugmask=0x10" # Fixes potential terminal rendering lags & flickering
+    # "amdgpu.runpm=0" # Disables aggressive runtime power management to prevent deep-state drops
+    # "amdgpu.mes=0" # CRITICAL: Disables Micro Engine Scheduler to block ML ring-buffer timeout hangs
+    # "amdgpu.gpu_recovery=1" # Enables automated recovery loops if the driver stalls during a batch
+    # "amdgpu.lockup_timeout=10000" # Generous 10-second timeout allocation for heavy token execution
+    # "amdgpu.noretry=0"
 
-    # VPE queue suspension workaround for Strix Point stability
-    "amdgpu.ip_block_mask=0x7FF"
+    # # VPE queue suspension workaround for Strix Point stability
+    # "amdgpu.ip_block_mask=0x7FF"
   ];
 
   # Guarantee the open-source graphics stack triggers early in the boot sequence

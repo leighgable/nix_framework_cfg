@@ -13,7 +13,7 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ./amd-optimization.nix
+    # ./amd-optimization.nix
     inputs.home-manager.nixosModules.home-manager
   ];
 
@@ -47,6 +47,10 @@
     enable = true;
     enableNPU = true;
     lemonade.user = "leigh";
+  };
+
+  hardware.amdgpu = {
+    opencl.enable = true;
   };
 
   networking.hostName = "oOo"; # Define your hostname.
